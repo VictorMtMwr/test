@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherWhisper</title>
+    <link rel="stylesheet" href='static\css\style.css', filename='style.css'>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="weather-container">
+    
+        <form id="city-search-form">
+            <input type="text" id="city-input" placeholder="Ingresa una ciudad" required>
+            <button type="submit">Buscar</button>
+        </form>
+
+        <div class="city-name">
+            <h1 id="city-name">---------</h1>
+            <p id="weather-description">Nublado</p>
+        </div>
+        <div class="temperature">
+            <h2 id="temperature">--</h2>
+        </div>
+        <div class="forecast-container">
+            <div class="uvIndex">
+                <h3>Índice UV</h3>
+                <p id="uvIndex">--</p>
+            </div>
+            <div class="humidity">
+                <h3>Humedad</h3>
+                <p id="humidity">--</p>
+            </div>
+            <div class="recommendation">
+                <h3>Recomendación por clima</h3>
+                <p id="recommendation">Camiseta ligera y shorts</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("city-search-form").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevenir el comportamiento por defecto del formulario
+            const city = document.getElementById("city-input").value;
+    
+            // Hacer una solicitud a la API Flask
+            fetch(`/recommendation?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);  // Mostrar error si no se puede obtener la información
+                    } else {
+                        // Limpiar los datos anteriores (opcional, por si queda algo mal)
+                        document.getElementById("city-name").textContent = "";
+                        document.getElementById("temperature").textContent = "";
+                        document.getElementById("uvIndex").textContent = "";
+                        document.getElementById("humidity").textContent = "";
+                        document.getElementById("recommendation").textContent = "";
+    
+                        // Actualizar la información con los nuevos datos
+                        document.getElementById("city-name").textContent = data.city;
+                        document.getElementById("temperature").textContent = `${data.temperature}°`;
+                        document.getElementById("uvIndex").textContent = `${data.uvIndex}`;
+                        document.getElementById("humidity").textContent = `${data.humidity}%`;
+                        document.getElementById("recommendation").textContent = data.recommendation;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al obtener los datos:", error);
+                    alert("Hubo un error al intentar obtener los datos del clima. Inténtalo nuevamente.");
+                });
+        });
+    </script>
+    
+</body>
+</html>
