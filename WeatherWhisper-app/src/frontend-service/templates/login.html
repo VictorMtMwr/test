@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherWhisper - Login</title>
-    <link rel="stylesheet" href='static\css\styles.css', filename='styles.css'>
+    
+    <!-- Enlace al CSS usando url_for para rutas correctas -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,27 +18,31 @@
     <div class="background">
         <div class="container">
             <div class="logo">
-                <img src="static/images/cloud-sun.png" alt="WeatherWhisper Logo" class="logo-img">
+                <!-- Enlace a la imagen usando url_for -->
+                <img src="{{ url_for('static', filename='images/cloud-sun.png') }}" alt="WeatherWhisper Logo" class="logo-img">
                 <h1 class="logo-text">WeatherWhisper</h1>
             </div>
 
-            <form class="form-container">
+            <form class="form-container" method="POST" action="{{ url_for('login') }}">
                 <h2>Login</h2>
                 <div class="input-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+                    <input type="email" id="email" name="email" placeholder="jane@example.com" required pattern="^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$" aria-label="Email address">
                 </div>
                 <div class="input-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="********" required>
+                    <input type="password" id="password" name="password" placeholder="********" required aria-label="Password">
                 </div>
                 <button type="submit" class="login-btn">LOGIN</button>
                 <p>¿No tienes una cuenta? <a href="{{ url_for('register') }}">Crea aquí</a></p>
+                
+                <!-- Mostrar mensaje de error si existe -->
                 {% if error %}
-                    <p style="color:red;">{{ error }}</p>  <!-- Mostrar mensaje de error -->
-                {%endif %}
+                    <p style="color:red;">{{ error }}</p>
+                {% endif %}
             </form>
         </div>
     </div>
 </body>
 </html>
+

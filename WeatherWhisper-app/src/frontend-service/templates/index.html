@@ -4,70 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherWhisper</title>
-    <link rel="stylesheet" href='static\css\style.css', filename='style.css'>
+
+    <!-- Cargar el CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="weather-container">
-    
         <form id="city-search-form">
             <input type="text" id="city-input" placeholder="Ingresa una ciudad" required>
             <button type="submit">Buscar</button>
         </form>
 
-        <div class="city-name">
+        <div class="weather-info">
             <h1 id="city-name">---------</h1>
             <p id="weather-description">Nublado</p>
-        </div>
-        <div class="temperature">
-            <h2 id="temperature">--</h2>
-        </div>
-        <div class="forecast-container">
-            <div class="uvIndex">
-                <h3>Índice UV</h3>
-                <p id="uvIndex">--</p>
-            </div>
-            <div class="humidity">
-                <h3>Humedad</h3>
-                <p id="humidity">--</p>
-            </div>
-            <div class="recommendation">
-                <h3>Recomendación por clima</h3>
-                <p id="recommendation">Camiseta ligera y shorts</p>
+            <h2 id="temperature">-- °C</h2>
+
+            <div class="weather-details">
+                <div class="detail-item">
+                    <h3>Humedad</h3>
+                    <p id="humidity">-- %</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Probabilidad de lluvia</h3>
+                    <p id="precipitation">-- %</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Recomendación por clima</h3>
+                    <p id="recommendation">Sin recomendación</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Índice UV</h3>
+                    <p id="uvIndex">--</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Velocidad del viento</h3>
+                    <p id="windSpeed">-- km/h</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Visibilidad</h3>
+                    <p id="visibility">-- km</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Cobertura Nubosa</h3>
+                    <p id="cloudCover">-- %</p>
+                </div>
+                <div class="detail-item">
+                    <h3>Coordenadas</h3>
+                    <p id="coordinates">--</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         document.getElementById("city-search-form").addEventListener("submit", function(event) {
-            event.preventDefault();  // Prevenir el comportamiento por defecto del formulario
+            event.preventDefault();
             const city = document.getElementById("city-input").value;
-    
-            // Hacer una solicitud a la API Flask
-            fetch(`/recommendation?city=${city}`)
+
+            fetch(`/api/weather?city=${city}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert(data.error);  // Mostrar error si no se puede obtener la información
+                        alert(data.error);
                     } else {
-                        // Limpiar los datos anteriores (opcional, por si queda algo mal)
-                        document.getElementById("city-name").textContent = "";
-                        document.getElementById("temperature").textContent = "";
-                        document.getElementById("uvIndex").textContent = "";
-                        document.getElementById("humidity").textContent = "";
-                        document.getElementById("recommendation").textContent = "";
-    
-                        // Actualizar la información con los nuevos datos
-                        document.getElementById("city-name").textContent = data.city;
-                        document.getElementById("temperature").textContent = `${data.temperature}°`;
-                        document.getElementById("uvIndex").textContent = `${data.uvIndex}`;
-                        document.getElementById("humidity").textContent = `${data.humidity}%`;
-                        document.getElementById("recommendation").textContent = data.recommendation;
+                        document.getElementById("city-name").textContent = data.city || "---------";
+                        document.getElementById("temperature").textContent = `${data.temperature || "--"} °C`;
+                        document.getElementById("humidity").textContent = `${data.humidity || "--"} %`;
+                        document.getElementById("precipitation").textContent = `${data.precipitation_probability || "--"} %`;
+                        document.getElementById("recommendation").textContent = data.recommendation || "Sin recomendación";
+                        document.getElementById("uvIndex").textContent = data.uv_index || "--";
+                        document.getElementById("windSpeed").textContent = `${data.wind_speed || "--"} km/h`;
+                        document.getElementById("visibility").textContent = `${data.visibility || "--"} km`;
+                        document.getElementById("cloudCover").textContent = `${data.cloud_cover || "--"} %`;
+
+                        const coordinates = data.coordinates ? `Lat: ${data.coordinates[0]}, Lon: ${data.coordinates[1]}` : "--";
+                        document.getElementById("coordinates").textContent = coordinates;
                     }
                 })
                 .catch(error => {
@@ -76,6 +93,5 @@
                 });
         });
     </script>
-    
 </body>
 </html>

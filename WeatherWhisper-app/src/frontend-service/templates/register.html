@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherWhisper - Create Account</title>
-    <link rel="stylesheet" href='static\css\styles.css', filename='styles.css'>
+    <link rel="stylesheet" href="/static/css/styles.css">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,11 +16,11 @@
     <div class="background">
         <div class="container">
             <div class="logo">
-                <img src="static/images/cloud-sun.png" alt="WeatherWhisper Logo" class="logo-img">
+                <img src="/static/images/cloud-sun.png" alt="WeatherWhisper Logo" class="logo-img">
                 <h1 class="logo-text">WeatherWhisper</h1>
             </div>
 
-            <form class="form-container" method="POST" action="/register">
+            <form class="form-container" method="POST" action="/api/register">
                 <h2>Create an account</h2>
                 <div class="input-row">
                     <div class="input-group">
@@ -45,7 +45,6 @@
                 <button type="submit" class="register-btn">REGISTER</button>
                 <p>¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a></p>
             </form>
-            
         </div>
     </div>
 </body>
